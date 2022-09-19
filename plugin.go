@@ -9,9 +9,15 @@ import (
 type plugin struct {
 	drone.Base
 
-	// TODO 配置项，可以使用结构体
-	// 如何配置选项请参数https://github.com/dronestock/drone
-	Todo string `default:"${PLUGIN_TODO=${TODO=默认值}}" validate:"required"`
+	// 类型
+	Type typ `default:"${PLUGIN_TYPE=${TYPE=deployment}}" validate:"required,oneof=deployment,stateful"`
+	// 名称
+	Name string `default:"${PLUGIN_NAME=${NAME}}" validate:"required"`
+	// 镜像名称
+	Image string `default:"${PLUGIN_IMAGE=${IMAGE}}" validate:"required"`
+
+	// 服务配置
+	Service *service `default:"${PLUGIN_SERVICE=${SERVICE}}"`
 }
 
 func newPlugin() drone.Plugin {
@@ -22,16 +28,18 @@ func (p *plugin) Config() drone.Config {
 	return p
 }
 
-// Steps TODO 返回所有要执行步骤
 func (p *plugin) Steps() []*drone.Step {
 	return []*drone.Step{
-		drone.NewStep(p.todo, drone.Name(`启动守护进程`)),
+		drone.NewStep(p.build, drone.Name(`打包`)),
 	}
 }
 
-// Fields TODO 这儿返回所有的参数，上层在执行步骤时，会将参数在日志中打印
-func (p *plugin) Fields() gox.Fields {
-	return gox.Fields{
-		field.String(`todo`, p.Todo),
+func (p *plugin) Fields() (fields gox.Fields) {
+	fields = gox.Fields{}
+	if nil != p.Service {
+		fields = append(fields, field.String(`service.name`, p.Service.Name))
+		fields = append(fields, field.Int(`service.port`, p.Service.Port))
 	}
+
+	return
 }
