@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: # TODO
+name: Kubernetes
 
 
 clone:
@@ -17,7 +17,7 @@ steps:
       - name: go
         path: /var/lib/go
     settings:
-      output: # TODO
+      output: k8s
 
   - name: 发布
     image: ccr.ccs.tencentyun.com/dronestock/docker
@@ -31,9 +31,9 @@ steps:
       PASSWORD_CCR:
         from_secret: password_tencentyun_ccr
     settings:
-      repository: # TODO
+      repository: dronestock/k8s
       registries:
-        - username: # TODO
+        - username: dronestock
           password: $${PASSWORD_DOCKER}
         - hostname: ccr.ccs.tencentyun.com
           username: "160290688"
