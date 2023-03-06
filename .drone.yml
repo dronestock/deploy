@@ -1,10 +1,18 @@
 kind: pipeline
 type: docker
-name: Kubernetes
+name: 发布
 
 
 clone:
   disable: true
+
+
+environment:
+  NAME: kubernetes
+  OUTPUT_LINUX: kubernetes.amd64.lin
+  OUTPUT_WINDOWS: kubernetes.amd64.exe
+  OUTPUT_MAC: kubernetes.amd64.mac
+  CHANGELOG_TAG_OUTPUT: CHANGELOG.tag.md
 
 
 steps:
@@ -17,10 +25,21 @@ steps:
       - name: go
         path: /var/lib/go
     settings:
-      # 可以修改输出文件名，如果修改，Dockerfile也要一起修改
-      output: plugin
+      outputs:
+        - name: docker/bin/$${NAME}
+          os: linux
+          arch: amd64
+        - name: docker/bin/$${OUTPUT_LINUX}
+          os: linux
+          arch: amd64
+        - name: docker/bin/$${OUTPUT_WINDOWS}
+          os: windows
+          arch: amd64
+        - name: docker/bin/$${OUTPUT_MAC}
+          os: darwin
+          arch: amd64
 
-  - name: 发布
+  - name: 推送
     image: ccr.ccs.tencentyun.com/dronestock/docker
     privileged: true
     volumes:
@@ -40,6 +59,37 @@ steps:
           username: "160290688"
           password: $${PASSWORD_CCR}
           required: true
+
+  - name: 改变
+    image: ccr.ccs.tencentyun.com/dronestock/changelog
+    when:
+      event:
+        - tag
+    settings:
+      output: $${CHANGELOG_TAG_OUTPUT}
+      tag: $${DRONE_TAG}
+
+  - name: 发布
+    image: ccr.ccs.tencentyun.com/dronestock/github
+    when:
+      event:
+        - tag
+    environment:
+      VERSION: $${DRONE_TAG##v}
+      TOKEN:
+        from_secret: token_github
+    settings:
+      release:
+        tag: $${DRONE_TAG}
+        token: $${TOKEN}
+        body: file("$${CHANGELOG_TAG_OUTPUT}")
+        assets:
+          - name: $${NAME}-$${VERSION}-linux-amd64
+            file: docker/bin/$${OUTPUT_LINUX}
+          - name: $${NAME}-$${VERSION}-windows-amd64.exe
+            file: docker/bin/$${OUTPUT_WINDOWS}
+          - name: $${NAME}-$${VERSION}-darwin-amd64
+            file: docker/bin/$${OUTPUT_MAC}
 
 
 volumes:

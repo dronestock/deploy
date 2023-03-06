@@ -1,0 +1,30 @@
+kind: Service
+apiVersion: {{ .Version }}
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .Namespace }}
+  labels:
+    app: {{ .Name }}
+    version: {{ .Version }}
+
+spec:
+  ports:
+    - name: https-minio
+      protocol: TCP
+      port: 443
+      targetPort: 9000
+      nodePort: 13148
+  selector:
+    app: {{ .Name }}
+    version: {{ .Version }}
+  clusterIP: 10.233.6.186
+  clusterIPs:
+    - 10.233.6.186
+  type: LoadBalancer
+  sessionAffinity: None
+  externalTrafficPolicy: Cluster
+  ipFamilies:
+    - IPv4
+  ipFamilyPolicy: SingleStack
+  allocateLoadBalancerNodePorts: true
+  internalTrafficPolicy: Cluster

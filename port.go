@@ -1,11 +1,10 @@
 package main
 
-type service struct {
+type port struct {
+	// 名称
+	Name string `json:"name"`
 	// 端口
-	Port int `default:"8080" json:"port"`
+	Port int `json:"port"`
 	// 协议
 	Protocol string `default:"tcp" json:"protocol" validate:"oneof=tcp udp"`
-
-	// 端口列表
-	Ports []*port `json:"ports"`
 }

@@ -1,0 +1,65 @@
+kind: Deployment
+apiVersion: apps/{{ .Version }}
+metadata:
+  name: {{ .Name }}
+  namespace: {{ .Namespace }}
+  labels:
+    app: {{ .Name }}
+    version: {{ .Version }}
+  {{ if .Deployment.Annotations }}
+    {{ range $key, $value := . }}
+       {{ $key }}: {{ $value }}
+    {{ end }}
+  {{ end }}
+
+spec:
+  replicas: {{ .Deployment.Replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Name }}
+      version: {{ .Version }}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ .Name }}
+        version: {{ .Version }}
+      annotations:
+        kubesphere.io/restartedAt: '2023-03-03T13:33:19.404Z'
+        logging.kubesphere.io/logsidecar-config: '{}'
+      containers:
+        - name: {{ .Name }}
+          image: {{ .Registry }}/{{ .Repository }}
+          {{ if .Deployment.Ports }}
+          ports:
+          {{ range .Deployment.Ports }}
+            - name: {{ .Name }}
+              containerPort: {{ .Port }}
+              protocol: {{ .Protocol }}
+          {{ end }}
+          {{ end }}
+          {{ if .Deployment.Environments }}
+          env:
+          {{ range $key, $value := .Deployment.Environments }}
+            - name: {{ $key }}
+              value: {{ $value }}
+          {{ end }}
+          {{ end }}
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      serviceAccountName: default
+      serviceAccount: default
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
