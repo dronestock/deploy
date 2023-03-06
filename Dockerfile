@@ -37,8 +37,5 @@ RUN set -ex \
     && rm -rf /var/cache/apk/*
 
 
-# 环境变量
-ENV DEPLOYMENT_TEMPLATE file("docker/etc/kubernetes/template/deployment.yaml.gohtml")
-
 # 执行命令
 ENTRYPOINT /bin/plugin
