@@ -37,3 +37,5 @@ require (
 )
 
 replace github.com/goexl/gox => ../../goexl/gox
+
+replace github.com/dronestock/drone => ../drone
