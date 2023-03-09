@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/goexl/gox/arg"
+	"github.com/goexl/gox/args"
 )
 
 const (
@@ -33,29 +33,29 @@ func (s *stepSetup) Runnable() bool {
 
 func (s *stepSetup) Run(_ context.Context) (err error) {
 	// 设置密钥
-	tokenArgs := arg.New().Build()
-	tokenArgs.Add(config, setCredentials, _default).Long(token, s.Token)
+	tokenArgs := args.New().Build()
+	tokenArgs.Subcommand(config, setCredentials, def).Arg(token, s.Token)
 	if err = s.kubectl(tokenArgs.Build()); nil != err {
 		return
 	}
 
 	// 设置通信服务器
-	serverArgs := arg.New().Build()
-	serverArgs.Add(config, setCluster, _default).Long(server, s.Endpoint).Long(insecure, true)
+	serverArgs := args.New().Build()
+	serverArgs.Subcommand(config, setCluster, def).Arg(server, s.Endpoint).Arg(insecure, true)
 	if err = s.kubectl(serverArgs.Build()); nil != err {
 		return
 	}
 
 	// 设置用户
-	userArgs := arg.New().Build()
-	userArgs.Add(config, setContext, _default).Long(cluster, _default).Long(user, s.Username)
+	userArgs := args.New().Build()
+	userArgs.Subcommand(config, setContext, def).Arg(cluster, def).Arg(user, s.Username)
 	if err = s.kubectl(userArgs.Build()); nil != err {
 		return
 	}
 
 	// 设置上下文
-	contextArgs := arg.New().Build()
-	contextArgs.Add(config, setContext, useContext, _default)
+	contextArgs := args.New().Build()
+	contextArgs.Subcommand(config, useContext, def)
 	err = s.kubectl(contextArgs.Build())
 
 	return

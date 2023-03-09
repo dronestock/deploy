@@ -6,7 +6,7 @@ import (
 
 	"github.com/goexl/gfx"
 	"github.com/goexl/gox"
-	"github.com/goexl/gox/arg"
+	"github.com/goexl/gox/args"
 	"github.com/goexl/gox/rand"
 	"github.com/goexl/gox/tpl"
 )
@@ -65,7 +65,7 @@ func (d *stepDeployment) Run(_ context.Context) (err error) {
 
 	// 清理文件
 	d.Cleanup().File(filename).Build()
-	err = d.kubectl(arg.New().Build().Add(apply).Long(force, filename).Build())
+	err = d.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build())
 
 	return
 }

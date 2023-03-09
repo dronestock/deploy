@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/dronestock/drone"
 	"github.com/goexl/gox"
-	"github.com/goexl/gox/arg"
+	"github.com/goexl/gox/args"
 	"github.com/goexl/gox/field"
 )
 
@@ -13,7 +13,7 @@ type plugin struct {
 	// 控制程序
 	Binary string `default:"${BINARY=kubectl}"`
 	// 服务
-	Endpoint string `default:"ENDPOINT" validate:"required"`
+	Endpoint string `default:"${ENDPOINT}" validate:"required"`
 	// 命名空间
 	Namespace string `default:"${NAMESPACE=default}"`
 
@@ -48,6 +48,7 @@ func (p *plugin) Config() drone.Config {
 func (p *plugin) Steps() drone.Steps {
 	return drone.Steps{
 		drone.NewStep(newSetupStep(p)).Name("配置").Build(),
+		drone.NewStep(newNamespaceStep(p)).Name("命名空间").Build(),
 		drone.NewStep(newDeploymentStep(p)).Name("无状态服务").Build(),
 	}
 }
@@ -64,6 +65,14 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 	return
 }
 
-func (p *plugin) kubectl(args arg.Args) error {
-	return p.Command(p.Binary).Args(args...).Build().Exec()
+func (p *plugin) kubectl(args *args.Args) (err error) {
+	_, err = p.Command(p.Binary).Args(args).Build().Exec()
+
+	return
+}
+
+func (p *plugin) outputs(args *args.Args, outputs *[]string) (err error) {
+	_, err = p.Command(p.Binary).Args(args).Collector().TrimRight("\n").Strings(outputs).Build().Exec()
+
+	return
 }

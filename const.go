@@ -1,12 +1,16 @@
 package main
 
 const (
+	enter = "\n"
+
 	deployment = "deployment"
 	yaml       = "yaml"
 	dot        = "."
-	force      = "force"
+	file       = "filename"
 
-	config   = "config"
-	_default = "default"
-	token    = "token"
+	config = "config"
+	def    = "default"
+	token  = "token"
+	get    = "get"
+	create = "create"
 )
