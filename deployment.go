@@ -8,7 +8,7 @@ type _deployment struct {
 	// 端口
 	Port int `default:"8080" json:"port,omitempty"`
 	// 协议
-	Protocol string `default:"tcp" json:"protocol,omitempty" validate:"oneof=tcp udp"`
+	Protocol string `default:"tcp" json:"protocol,omitempty" validate:"oneof=tcp udp sctp"`
 
 	// 端口列表
 	Ports []*port `json:"ports,omitempty"`

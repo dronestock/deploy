@@ -8,12 +8,20 @@ metadata:
     version: {{ .Version }}
 
 spec:
+{{- if .Service.Ports }}
   ports:
-    - name: https-minio
-      protocol: TCP
-      port: 443
-      targetPort: 9000
-      nodePort: 13148
+  {{- range .Service.Ports }}
+    - name: {{ .Name }}
+      protocol: {{ .KubernetesProtocol }}
+      port: {{ .Port }}
+    {{- if .Target }}
+      targetPort: {{ .Target }}
+    {{- end }}
+    {{- if .Node }}
+      nodePort: {{ .Node }}
+    {{- end }}
+  {{- end }}
+{{- end }}
   selector:
     app: {{ .Name }}
     version: {{ .Version }}

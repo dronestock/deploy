@@ -11,10 +11,7 @@ import (
 	"github.com/goexl/gox/tpl"
 )
 
-const (
-	defaultDeploymentTemplate = "docker/etc/kubernetes/template/deployment.yaml.gohtml"
-	apply                     = "apply"
-)
+const defaultDeploymentTemplate = "docker/etc/kubernetes/template/deployment.yaml.gohtml"
 
 type stepDeployment struct {
 	*plugin

@@ -51,7 +51,7 @@ steps:
       PASSWORD_CCR:
         from_secret: password_tencentyun_ccr
     settings:
-      repository: dronestock/k8s
+      repository: dronestock/kubernetes
       registries:
         - username: dronestock
           password: $${PASSWORD_DOCKER}
@@ -82,7 +82,7 @@ steps:
       release:
         tag: $${DRONE_TAG}
         token: $${TOKEN}
-        body: file("$${CHANGELOG_TAG_OUTPUT}")
+        body: file('$${CHANGELOG_TAG_OUTPUT}')
         assets:
           - name: $${NAME}-$${VERSION}-linux-amd64
             file: docker/bin/$${OUTPUT_LINUX}

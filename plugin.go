@@ -49,7 +49,8 @@ func (p *plugin) Steps() drone.Steps {
 	return drone.Steps{
 		drone.NewStep(newSetupStep(p)).Name("配置").Build(),
 		drone.NewStep(newNamespaceStep(p)).Name("命名空间").Build(),
-		drone.NewStep(newDeploymentStep(p)).Name("无状态服务").Build(),
+		drone.NewStep(newDeploymentStep(p)).Name("无状态应用").Build(),
+		drone.NewStep(newServiceStep(p)).Name("服务").Build(),
 	}
 }
 

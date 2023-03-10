@@ -1,8 +1,6 @@
 package main
 
 const (
-	enter = "\n"
-
 	deployment = "deployment"
 	yaml       = "yaml"
 	dot        = "."
@@ -13,4 +11,5 @@ const (
 	token  = "token"
 	get    = "get"
 	create = "create"
+	apply  = "apply"
 )

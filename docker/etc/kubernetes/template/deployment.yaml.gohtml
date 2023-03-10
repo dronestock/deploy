@@ -6,11 +6,11 @@ metadata:
   labels:
     app: {{ .Name }}
     version: {{ .Version }}
-  {{ if .Deployment.Annotations }}
-    {{ range $key, $value := . }}
+  {{- if .Deployment.Annotations }}
+    {{- range $key, $value := . }}
        {{ $key }}: {{ $value }}
-    {{ end }}
-  {{ end }}
+    {{- end }}
+  {{- end }}
 
 spec:
   replicas: {{ .Deployment.Replicas }}
@@ -31,21 +31,21 @@ spec:
       containers:
         - name: {{ .Name }}
           image: {{ .Registry }}/{{ .Repository }}
-          {{ if .Deployment.Ports }}
+        {{- if .Deployment.Ports }}
           ports:
-          {{ range .Deployment.Ports }}
+          {{- range .Deployment.Ports }}
             - name: {{ .Name }}
               containerPort: {{ .Port }}
               protocol: {{ .KubernetesProtocol }}
-          {{ end }}
-          {{ end }}
-          {{ if .Deployment.Environments }}
+          {{- end }}
+        {{- end }}
+        {{- if .Deployment.Environments }}
           env:
-          {{ range $key, $value := .Deployment.Environments }}
+          {{- range $key, $value := .Deployment.Environments }}
             - name: {{ $key }}
               value: {{ $value }}
-          {{ end }}
-          {{ end }}
+          {{- end }}
+        {{- end }}
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
