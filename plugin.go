@@ -34,7 +34,7 @@ type plugin struct {
 	// 无状态服务
 	Deployment *_deployment `default:"${DEPLOYMENT}"`
 	// 服务配置
-	Service *service `default:"${SERVICE}"`
+	Service *_service `default:"${SERVICE}"`
 }
 
 func newPlugin() drone.Plugin {
@@ -60,7 +60,7 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 		fields = append(fields, field.New("deployment", p.Deployment))
 	}
 	if nil != p.Service {
-		fields = append(fields, field.New("service", p.Service))
+		fields = append(fields, field.New("_service", p.Service))
 	}
 
 	return

@@ -11,7 +11,7 @@ import (
 	"github.com/goexl/gox/tpl"
 )
 
-const defaultServiceTemplate = "docker/etc/kubernetes/template/service.yaml.gohtml"
+const defaultServiceTemplate = "docker/etc/kubernetes/template/_service.yaml.gohtml"
 
 type stepService struct {
 	*plugin
@@ -30,23 +30,17 @@ func (d *stepService) Runnable() bool {
 func (d *stepService) Run(_ context.Context) (err error) {
 	// 增加端口，兼容只想暴露一个端口的情况
 	if 0 != d.Service.Port {
-		port := new(port)
+		port := new(servicePort)
 		port.Name = d.Name
 		port.Port = d.Service.Port
+		port.Target = d.Service.Target
+		port.Node = d.Service.Node
 		port.Protocol = d.Service.Protocol
 		d.Service.Ports = append(d.Service.Ports, port)
 	}
 
-	// 统一环境变量
-	if nil == d.Service.Environments {
-		d.Service.Environments = make(map[string]string)
-	}
-	for key, value := range d.Service.Envs {
-		d.Service.Environments[key] = value
-	}
-
 	label := rand.New().String().Build().Generate()
-	filename := gox.StringBuilder(deployment).Append(dot).Append(label).Append(dot).Append(yaml).String()
+	filename := gox.StringBuilder(service).Append(dot).Append(label).Append(dot).Append(yaml).String()
 
 	// 写入配置文件
 	if defaultServiceTemplate != d.Service.Template {

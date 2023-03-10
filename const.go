@@ -2,6 +2,7 @@ package main
 
 const (
 	deployment = "deployment"
+	service    = "service"
 	yaml       = "yaml"
 	dot        = "."
 	file       = "filename"

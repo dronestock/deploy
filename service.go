@@ -1,6 +1,10 @@
 package main
 
-type service struct {
+type _service struct {
+	// 模板
+	// nolint: lll
+	Template string `default:"${DEPLOYMENT_TEMPLATE=docker/etc/kubernetes/template/_service.yaml.gohtml}" json:"template,omitempty"`
+
 	// 端口
 	Port int `default:"8080" json:"port"`
 	// 协议
