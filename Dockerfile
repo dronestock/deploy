@@ -4,7 +4,7 @@ FROM alpine/k8s:1.26.2 AS kubectl
 
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.16.2
+FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.17.2
 
 
 LABEL author="storezhang<华寅>" \
