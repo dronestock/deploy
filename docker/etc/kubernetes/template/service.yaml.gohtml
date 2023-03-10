@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Namespace }}
   labels:
     app: {{ .Name }}
-    version: {{ .Version }}
+    tag: {{ .Tag }}
 
 spec:
 {{- if .Service.Ports }}
@@ -24,7 +24,7 @@ spec:
 {{- end }}
   selector:
     app: {{ .Name }}
-    version: {{ .Version }}
+    tag: {{ .Tag }}
   clusterIP: 10.233.6.186
   clusterIPs:
     - 10.233.6.186

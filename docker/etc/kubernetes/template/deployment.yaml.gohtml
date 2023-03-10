@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Namespace }}
   labels:
     app: {{ .Name }}
-    version: {{ .Version }}
+    tag: {{ .Tag }}
   {{- if .Deployment.Annotations }}
     {{- range $key, $value := . }}
        {{ $key }}: {{ $value }}
@@ -17,7 +17,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Name }}
-      version: {{ .Version }}
+      tag: {{ .Tag }}
   template:
     metadata:
       creationTimestamp: null
@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: {{ .Name }}
-          image: {{ .Registry }}/{{ .Repository }}
+          image: {{ .Registry }}/{{ .Repository }}:{{ .Tag }}
         {{- if .Deployment.Ports }}
           ports:
           {{- range .Deployment.Ports }}

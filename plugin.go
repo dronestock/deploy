@@ -30,6 +30,8 @@ type plugin struct {
 	Registry string `default:"${REGISTRY}" validate:"required"`
 	// 仓库
 	Repository string `default:"${REPOSITORY}" validate:"required"`
+	// 标签
+	Tag string `default:"${TAG=${DRONE_TAG=0.0.${DRONE_BUILD_NUMBER}}}"`
 
 	// 无状态服务
 	Deployment *_deployment `default:"${DEPLOYMENT}"`
