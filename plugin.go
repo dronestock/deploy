@@ -31,7 +31,7 @@ type plugin struct {
 	// 仓库
 	Repository string `default:"${REPOSITORY}" validate:"required"`
 	// 标签
-	Tag string `default:"${TAG=${DRONE_TAG=0.0.${DRONE_BUILD_NUMBER}}}"`
+	Tag string `default:"${TAG=latest}"`
 
 	// 无状态服务
 	Deployment *_deployment `default:"${DEPLOYMENT}"`
@@ -41,6 +41,10 @@ type plugin struct {
 
 func newPlugin() drone.Plugin {
 	return new(plugin)
+}
+
+func (p *plugin) Setup() (err error) {
+	return
 }
 
 func (p *plugin) Config() drone.Config {
