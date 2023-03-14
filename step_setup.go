@@ -28,20 +28,28 @@ func newSetupStep(plugin *plugin) *stepSetup {
 }
 
 func (s *stepSetup) Runnable() bool {
-	return true
+	return nil != s.Kubernetes
 }
 
-func (s *stepSetup) Run(_ context.Context) (err error) {
+func (s *stepSetup) Run(ctx context.Context) (err error) {
+	if nil != s.Kubernetes {
+		err = s.kubernetes(ctx)
+	}
+
+	return
+}
+
+func (s *stepSetup) kubernetes(_ context.Context) (err error) {
 	// 设置密钥
 	tokenArgs := args.New().Build()
-	tokenArgs.Subcommand(config, setCredentials, def).Arg(token, s.Token)
+	tokenArgs.Subcommand(config, setCredentials, def).Arg(token, s.Password)
 	if err = s.kubectl(tokenArgs.Build()); nil != err {
 		return
 	}
 
 	// 设置通信服务器
 	serverArgs := args.New().Build()
-	serverArgs.Subcommand(config, setCluster, def).Arg(server, s.Endpoint).Arg(insecure, true)
+	serverArgs.Subcommand(config, setCluster, def).Arg(server, s.Kubernetes.Endpoint).Arg(insecure, true)
 	if err = s.kubectl(serverArgs.Build()); nil != err {
 		return
 	}

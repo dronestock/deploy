@@ -1,0 +1,5 @@
+{
+    "binary": "D:\\Apps\\Kubectl\\kubectl.exe",
+    "endpoint": "https://192.168.102.150:6443",
+    "namespace": "develop"
+}

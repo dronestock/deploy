@@ -25,7 +25,7 @@ func newNamespaceStep(plugin *plugin) *stepNamespace {
 }
 
 func (n *stepNamespace) Runnable() bool {
-	return true
+	return nil != n.Kubernetes
 }
 
 func (n *stepNamespace) Run(_ context.Context) (err error) {
@@ -38,8 +38,8 @@ func (n *stepNamespace) Run(_ context.Context) (err error) {
 	}
 
 	// 如果命名空间不存在，创建命名空间
-	if !gox.Contains(&namespaces, n.Namespace) {
-		err = n.kubectl(args.New().Build().Subcommand(create, namespace, n.Namespace).Build())
+	if !gox.Contains(&namespaces, n.Kubernetes.Namespace) {
+		err = n.kubectl(args.New().Build().Subcommand(create, namespace, n.Kubernetes.Namespace).Build())
 	}
 
 	return

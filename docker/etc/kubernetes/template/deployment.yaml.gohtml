@@ -1,9 +1,9 @@
 kind: Deployment
-apiVersion: apps/{{ .Version }}
+apiVersion: apps/{{ .Kubernetes.Version }}
 metadata:
-  {{ if .Share.Namespace }}shareProcessNamespace: true{{ end -}}
+  {{ if .Kubernetes.Share.Namespace }}shareProcessNamespace: true{{ end -}}
   name: {{ .Name }}
-  namespace: {{ .Namespace }}
+  namespace: {{ .Kubernetes.Namespace }}
   labels:
     app: {{ .Name }}
     tag: {{ .Tag }}

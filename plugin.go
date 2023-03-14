@@ -15,30 +15,33 @@ type plugin struct {
 	drone.Base
 
 	// Kubernetes配置
-	Kubernetes *kubernetes `default:"${KUBERNETES}"`
+	Kubernetes *kubernetes `default:"${KUBERNETES}" json:"kubernetes"`
 
 	// 用户名
-	Username string `default:"${USERNAME=default}"`
+	Username string `default:"${USERNAME=default}" json:"username"`
 	// 密钥
-	Token string `default:"${TOKEN}" validate:"required"`
+	Token string `default:"${TOKEN}" json:"token" validate:"required_without_all=Key Password"`
+	// 密码
+	// 密钥和密码统一使用密码做内部变量配置
+	Password string `default:"${PASSWORD}" json:"password" validate:"required_without_all=Key Token"`
+	// 密钥
+	Key string `default:"${KEY}" json:"key" validate:"required_without_all=Token Password"`
 
-	// 版本
-	Version string `default:"${VERSION=v1}"`
 	// 名称
-	Name string `default:"${NAME}" validate:"required"`
+	Name string `default:"${NAME}" json:"name" validate:"required"`
 	// 注册表
-	Registry string `default:"${REGISTRY}" validate:"required"`
+	Registry string `default:"${REGISTRY}" json:"registry" validate:"required"`
 	// 仓库
-	Repository string `default:"${REPOSITORY}" validate:"required"`
+	Repository string `default:"${REPOSITORY}" json:"repository" validate:"required"`
 	// 标签
-	Tag string `default:"${TAG=latest}"`
+	Tag string `default:"${TAG=latest}" json:"tag"`
 
 	// 配置目录
-	Dir string `default:"${DIR=.deploy}"`
+	Dir string `default:"${DIR=.deploy}" json:"dir"`
 	// 无状态服务
-	Stateless *_stateless `default:"${DEPLOYMENT}"`
+	Stateless *_stateless `default:"${DEPLOYMENT}" json:"stateless"`
 	// 服务配置
-	Service *_service `default:"${SERVICE}"`
+	Service *_service `default:"${SERVICE}" json:"service"`
 }
 
 func newPlugin() drone.Plugin {
@@ -46,6 +49,8 @@ func newPlugin() drone.Plugin {
 }
 
 func (p *plugin) Setup() (err error) {
+	p.Password = gox.If("" != p.Token, p.Token)
+
 	return
 }
 
@@ -68,7 +73,7 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 		fields = append(fields, field.New("stateless", p.Stateless))
 	}
 	if nil != p.Service {
-		fields = append(fields, field.New("_service", p.Service))
+		fields = append(fields, field.New("service", p.Service))
 	}
 
 	return

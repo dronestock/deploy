@@ -1,8 +1,8 @@
 kind: Service
-apiVersion: {{ .Version }}
+apiVersion: {{ .Kubernetes.Version }}
 metadata:
   name: {{ .Name }}
-  namespace: {{ .Namespace }}
+  namespace: {{ .Kubernetes.Namespace }}
   labels:
     app: {{ .Name }}
     tag: {{ .Tag }}
