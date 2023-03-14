@@ -1,6 +1,6 @@
 package main
 
-type _deployment struct {
+type _stateless struct {
 	// 模板
 	// nolint: lll
 	Template string `default:"${DEPLOYMENT_TEMPLATE=docker/etc/kubernetes/template/deployment.yaml.gohtml}" json:"template,omitempty"`

@@ -1,11 +1,15 @@
 package main
 
 const (
-	deployment = "deployment"
-	service    = "service"
-	yaml       = "yaml"
-	dot        = "."
-	file       = "filename"
+	stateless          = "stateless"
+	envFilename        = "env.kv"
+	annotationFilename = "annotation.kv"
+	service            = "service"
+	yaml               = "yaml"
+	dot                = "."
+	equal              = "="
+	file               = "filename"
+	enter              = "\n"
 
 	config = "config"
 	def    = "default"

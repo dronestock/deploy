@@ -1,19 +1,21 @@
 kind: Deployment
 apiVersion: apps/{{ .Version }}
 metadata:
+  {{ if .Share.Namespace }}shareProcessNamespace: true{{ end -}}
   name: {{ .Name }}
   namespace: {{ .Namespace }}
   labels:
     app: {{ .Name }}
     tag: {{ .Tag }}
-  {{- if .Deployment.Annotations }}
-    {{- range $key, $value := . }}
-       {{ $key }}: {{ $value }}
-    {{- end }}
+{{- if .Stateless.Annotations }}
+  annotations:
+  {{- range $key, $value := . }}
+     {{ $key }}: {{ $value }}
   {{- end }}
+{{- end }}
 
 spec:
-  replicas: {{ .Deployment.Replicas }}
+  replicas: {{ .Stateless.Replicas }}
   selector:
     matchLabels:
       app: {{ .Name }}
@@ -23,25 +25,28 @@ spec:
       creationTimestamp: null
       labels:
         app: {{ .Name }}
-        version: {{ .Version }}
+        tag: {{ .Tag }}
+    {{- if .Stateless.Annotations }}
       annotations:
-        kubesphere.io/restartedAt: '2023-03-03T13:33:19.404Z'
-        logging.kubesphere.io/logsidecar-config: '{}'
+      {{- range $key, $value := . }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+    {{- end }}
     spec:
       containers:
         - name: {{ .Name }}
           image: {{ .Registry }}/{{ .Repository }}:{{ .Tag }}
-        {{- if .Deployment.Ports }}
+        {{- if .Stateless.Ports }}
           ports:
-          {{- range .Deployment.Ports }}
+          {{- range .Stateless.Ports }}
             - name: {{ .Name }}
               containerPort: {{ .Port }}
               protocol: {{ .KubernetesProtocol }}
           {{- end }}
         {{- end }}
-        {{- if .Deployment.Environments }}
+        {{- if .Stateless.Environments }}
           env:
-          {{- range $key, $value := .Deployment.Environments }}
+          {{- range $key, $value := .Stateless.Environments }}
             - name: {{ $key }}
               value: {{ $value }}
           {{- end }}
@@ -49,7 +54,7 @@ spec:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
