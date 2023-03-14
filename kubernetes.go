@@ -9,6 +9,4 @@ type kubernetes struct {
 	Namespace string `default:"${KUBERNETES_NAMESPACE=default}" json:"namespace"`
 	// 共享
 	Share share `default:"${KUBERNETES_SHARE}" json:"share"`
-	// 版本
-	Version string `default:"${KUBERNETES_VERSION=v1}"`
 }

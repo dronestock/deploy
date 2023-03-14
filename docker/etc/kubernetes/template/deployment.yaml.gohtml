@@ -1,5 +1,5 @@
 kind: Deployment
-apiVersion: apps/{{ .Kubernetes.Version }}
+apiVersion: apps/v1
 metadata:
   {{ if .Kubernetes.Share.Namespace }}shareProcessNamespace: true{{ end -}}
   name: {{ .Name }}
