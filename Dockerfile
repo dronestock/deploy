@@ -30,7 +30,7 @@ RUN set -ex \
     \
     \
     # 增加执行权限
-    && chmod +x /bin/kubernetes \
+    && chmod +x /bin/deploy \
     \
     \
     \
@@ -38,4 +38,4 @@ RUN set -ex \
 
 
 # 执行命令
-ENTRYPOINT /bin/plugin
+ENTRYPOINT /bin/deploy
