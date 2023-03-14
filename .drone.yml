@@ -8,10 +8,10 @@ clone:
 
 
 environment:
-  NAME: kubernetes
-  OUTPUT_LINUX: kubernetes.amd64.lin
-  OUTPUT_WINDOWS: kubernetes.amd64.exe
-  OUTPUT_MAC: kubernetes.amd64.mac
+  NAME: deploy
+  OUTPUT_LINUX: deploy.amd64.lin
+  OUTPUT_WINDOWS: deploy.amd64.exe
+  OUTPUT_MAC: deploy.amd64.mac
   CHANGELOG_TAG_OUTPUT: CHANGELOG.tag.md
 
 
@@ -29,13 +29,13 @@ steps:
         - name: docker/bin/$${NAME}
           os: linux
           arch: amd64
-        - name: docker/bin/$${OUTPUT_LINUX}
+        - name: $${OUTPUT_LINUX}
           os: linux
           arch: amd64
-        - name: docker/bin/$${OUTPUT_WINDOWS}
+        - name: $${OUTPUT_WINDOWS}
           os: windows
           arch: amd64
-        - name: docker/bin/$${OUTPUT_MAC}
+        - name: $${OUTPUT_MAC}
           os: darwin
           arch: amd64
 
@@ -51,7 +51,7 @@ steps:
       PASSWORD_CCR:
         from_secret: password_tencentyun_ccr
     settings:
-      repository: dronestock/kubernetes
+      repository: dronestock/deploy
       registries:
         - username: dronestock
           password: $${PASSWORD_DOCKER}
@@ -85,11 +85,11 @@ steps:
         body: file('$${CHANGELOG_TAG_OUTPUT}')
         assets:
           - name: $${NAME}-$${VERSION}-linux-amd64
-            file: docker/bin/$${OUTPUT_LINUX}
+            file: $${OUTPUT_LINUX}
           - name: $${NAME}-$${VERSION}-windows-amd64.exe
-            file: docker/bin/$${OUTPUT_WINDOWS}
+            file: $${OUTPUT_WINDOWS}
           - name: $${NAME}-$${VERSION}-darwin-amd64
-            file: docker/bin/$${OUTPUT_MAC}
+            file: $${OUTPUT_MAC}
 
 
 volumes:

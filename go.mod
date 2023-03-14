@@ -1,4 +1,4 @@
-module github.com/dronestock/kubernetes
+module github.com/dronestock/deploy
 
 go 1.19
 
