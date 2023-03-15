@@ -9,6 +9,7 @@ const (
 	dot                = "."
 	quota              = `"`
 	equal              = "="
+	slash              = "/"
 	file               = "filename"
 	enter              = "\n"
 

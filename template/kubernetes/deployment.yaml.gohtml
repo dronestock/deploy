@@ -5,7 +5,8 @@ metadata:
   namespace: {{ .Kubernetes.Namespace }}
   labels:
     app: {{ .Name }}
-    tag: {{ .Tag }}
+    registry: {{ .Registry }}
+    repository: {{ .KubernetesRepository }}
 {{- if .Stateless.Annotations }}
   annotations:
   {{- range $key, $value := . }}
@@ -18,13 +19,15 @@ spec:
   selector:
     matchLabels:
       app: {{ .Name }}
-      tag: {{ .Tag }}
+      registry: {{ .Registry }}
+      repository: {{ .KubernetesRepository }}
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: {{ .Name }}
-        tag: {{ .Tag }}
+        registry: {{ .Registry }}
+        repository: {{ .KubernetesRepository }}
     {{- if .Stateless.Annotations }}
       annotations:
       {{- range $key, $value := . }}

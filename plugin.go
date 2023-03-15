@@ -86,6 +86,10 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 	return
 }
 
+func (p *plugin) KubernetesRepository() string {
+	return strings.ReplaceAll(p.Repository, slash, dot)
+}
+
 func (p *plugin) kubectl(args *args.Args) (err error) {
 	_, err = p.Command(p.Kubernetes.Binary).Args(args).Build().Exec()
 
