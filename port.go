@@ -6,11 +6,13 @@ import (
 
 type port struct {
 	// 名称
-	Name string `json:"name"`
-	// 端口
-	Port int `json:"port"`
+	Name string `json:"name,omitempty" validate:"required"`
+	// 本地端口
+	Local int `json:"local,omitempty" validate:"required"`
+	// 暴露端口
+	Expose int `json:"expose,omitempty"`
 	// 协议
-	Protocol string `default:"tcp" json:"protocol" validate:"oneof=tcp udp sctp"`
+	Protocol string `default:"tcp" json:"protocol,omitempty" validate:"oneof=tcp udp sctp"`
 }
 
 func (p *port) KubernetesProtocol() string {

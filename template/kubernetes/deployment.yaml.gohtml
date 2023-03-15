@@ -36,11 +36,11 @@ spec:
       containers:
         - name: {{ .Name }}
           image: {{ .Registry }}/{{ .Repository }}:{{ .Tag }}
-        {{- if .Stateless.Ports }}
+        {{- if .Ports }}
           ports:
-          {{- range .Stateless.Ports }}
+          {{- range .Ports }}
             - name: {{ .Name }}
-              containerPort: {{ .Port }}
+              containerPort: {{ .Local }}
               protocol: {{ .KubernetesProtocol }}
           {{- end }}
         {{- end }}

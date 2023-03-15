@@ -47,15 +47,6 @@ func (s *stepStateless) Run(ctx context.Context) (err error) {
 		return
 	}
 
-	// 增加端口，兼容只想暴露一个端口的情况
-	if 0 != s.Stateless.Port {
-		port := new(port)
-		port.Name = s.Name
-		port.Port = s.Stateless.Port
-		port.Protocol = s.Stateless.Protocol
-		s.Stateless.Ports = append(s.Stateless.Ports, port)
-	}
-
 	if nil != s.Kubernetes {
 		err = s.kubernetes(ctx)
 	}

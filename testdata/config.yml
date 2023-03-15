@@ -1,0 +1,14 @@
+settings:
+  token: token_kubernetes
+  kubernetes:
+    endpoint: ${ENDPOINT}
+    namespace: $${DRONE_BRANCH%/*}
+    share:
+      namespace: true
+  name: $${NAME}
+  registry: $${REGISTRY}
+  repository: $${REPOSITORY}
+  tag: $${TAG}
+
+  stateless:
+    replicas: 3

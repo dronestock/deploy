@@ -15,33 +15,36 @@ type plugin struct {
 	drone.Base
 
 	// Kubernetes配置
-	Kubernetes *kubernetes `default:"${KUBERNETES}" json:"kubernetes"`
+	Kubernetes *kubernetes `default:"${KUBERNETES}" json:"kubernetes,omitempty"`
 
 	// 用户名
-	Username string `default:"${USERNAME=default}" json:"username"`
+	Username string `default:"${USERNAME=default}" json:"username,omitempty"`
 	// 密钥
-	Token string `default:"${TOKEN}" json:"token" validate:"required_without_all=Key Password"`
+	Token string `default:"${TOKEN}" json:"token,omitempty" validate:"required_without_all=Key Password"`
 	// 密码
 	// 密钥和密码统一使用密码做内部变量配置
-	Password string `default:"${PASSWORD}" json:"password" validate:"required_without_all=Key Token"`
+	Password string `default:"${PASSWORD}" json:"password,omitempty" validate:"required_without_all=Key Token"`
 	// 密钥
-	Key string `default:"${KEY}" json:"key" validate:"required_without_all=Token Password"`
+	Key string `default:"${KEY}" json:"key,omitempty" validate:"required_without_all=Token Password"`
 
 	// 名称
-	Name string `default:"${NAME}" json:"name" validate:"required"`
+	Name string `default:"${NAME}" json:"name,omitempty" validate:"required"`
 	// 注册表
-	Registry string `default:"${REGISTRY}" json:"registry" validate:"required"`
+	Registry string `default:"${REGISTRY}" json:"registry,omitempty" validate:"required"`
 	// 仓库
-	Repository string `default:"${REPOSITORY}" json:"repository" validate:"required"`
+	Repository string `default:"${REPOSITORY}" json:"repository,omitempty" validate:"required"`
 	// 标签
-	Tag string `default:"${TAG=latest}" json:"tag"`
+	Tag string `default:"${TAG=latest}" json:"tag,omitempty"`
+
+	// 端口
+	Port *port `default:"${PORT}" json:"port,omitempty"`
+	// 端口列表
+	Ports []*port `default:"${PORTS}" json:"ports,omitempty"`
 
 	// 配置目录
-	Dir string `default:"${DIR=.deploy}" json:"dir"`
+	Dir string `default:"${DIR=.deploy}" json:"dir,omitempty"`
 	// 无状态服务
-	Stateless *_stateless `default:"${STATELESS}" json:"stateless"`
-	// 服务配置
-	Service *_service `default:"${SERVICE}" json:"service"`
+	Stateless *_stateless `default:"${STATELESS}" json:"stateless,omitempty"`
 }
 
 func newPlugin() drone.Plugin {
@@ -50,6 +53,13 @@ func newPlugin() drone.Plugin {
 
 func (p *plugin) Setup() (err error) {
 	p.Password = gox.If("" != p.Token, p.Token)
+	// 统一端口配置
+	if nil == p.Ports {
+		p.Ports = make([]*port, 0)
+	}
+	if nil != p.Port {
+		p.Ports = append(p.Ports, p.Port)
+	}
 
 	return
 }
@@ -71,9 +81,6 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 	fields = make(gox.Fields[any], 0, 2)
 	if nil != p.Stateless {
 		fields = append(fields, field.New("stateless", p.Stateless))
-	}
-	if nil != p.Service {
-		fields = append(fields, field.New("service", p.Service))
 	}
 
 	return

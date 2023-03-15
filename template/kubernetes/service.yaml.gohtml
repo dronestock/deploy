@@ -8,26 +8,20 @@ metadata:
     tag: {{ .Tag }}
 
 spec:
-{{- if .Service.Ports }}
+{{- if .Ports }}
   ports:
-  {{- range .Service.Ports }}
+  {{- range .Ports }}
     - name: {{ .Name }}
       protocol: {{ .KubernetesProtocol }}
-      port: {{ .Port }}
-    {{- if .Target }}
-      targetPort: {{ .Target }}
-    {{- end }}
-    {{- if .Node }}
-      nodePort: {{ .Node }}
+      port: {{ .Expose }}
+    {{- if .Local }}
+      targetPort: {{ .Local }}
     {{- end }}
   {{- end }}
 {{- end }}
   selector:
     app: {{ .Name }}
     tag: {{ .Tag }}
-  clusterIP: 10.233.6.186
-  clusterIPs:
-    - 10.233.6.186
   type: LoadBalancer
   sessionAffinity: None
   externalTrafficPolicy: Cluster

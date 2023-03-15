@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	_ "embed"
+	"fmt"
+	"os"
 
 	"github.com/goexl/gfx"
 	"github.com/goexl/gox"
@@ -16,6 +18,8 @@ var defaultServiceTemplate []byte
 
 type stepService struct {
 	*plugin
+
+	printed bool
 }
 
 func newServiceStep(plugin *plugin) *stepService {
@@ -24,38 +28,49 @@ func newServiceStep(plugin *plugin) *stepService {
 	}
 }
 
-func (d *stepService) Runnable() bool {
-	return nil != d.Service
-}
+func (s *stepService) Runnable() (runnable bool) {
+	for _, port := range s.Ports {
+		if 0 != port.Expose {
+			runnable = true
+		}
 
-func (d *stepService) Run(_ context.Context) (err error) {
-	// 增加端口，兼容只想暴露一个端口的情况
-	if 0 != d.Service.Port {
-		port := new(servicePort)
-		port.Name = d.Name
-		port.Port = d.Service.Port
-		port.Target = d.Service.Target
-		port.Node = d.Service.Node
-		port.Protocol = d.Service.Protocol
-		d.Service.Ports = append(d.Service.Ports, port)
+		if runnable {
+			break
+		}
 	}
 
+	return
+}
+
+func (s *stepService) Run(ctx context.Context) (err error) {
+	if nil != s.Kubernetes {
+		err = s.kubernetes(ctx)
+	}
+
+	return
+}
+
+func (s *stepService) kubernetes(_ context.Context) (err error) {
 	label := rand.New().String().Build().Generate()
 	filename := gox.StringBuilder(service).Append(dot).Append(label).Append(dot).Append(yaml).String()
 
 	// 写入配置文件
-	if "" != d.Kubernetes.Service {
-		err = gfx.Copy(d.Service.Template, filename)
+	if "" != s.Kubernetes.Service {
+		err = gfx.Copy(s.Kubernetes.Service, filename)
 	} else {
-		err = tpl.New(string(defaultServiceTemplate)).Data(d.plugin).Build().ToFile(filename)
+		err = tpl.New(string(defaultServiceTemplate)).Data(s.plugin).Build().ToFile(filename)
 	}
 	if nil != err {
 		return
 	}
 
 	// 清理文件
-	d.Cleanup().File(filename).Build()
-	err = d.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build())
+	s.Cleanup().File(filename).Build()
+	if err = s.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build()); nil != err && !s.printed {
+		bytes, _ := os.ReadFile(filename)
+		fmt.Println(string(bytes))
+		s.printed = true
+	}
 
 	return
 }
