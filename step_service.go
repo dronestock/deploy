@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"os"
+	_ "embed"
 
 	"github.com/goexl/gfx"
 	"github.com/goexl/gox"
@@ -11,7 +11,8 @@ import (
 	"github.com/goexl/gox/tpl"
 )
 
-const defaultServiceTemplate = "docker/etc/kubernetes/template/_service.yaml.gohtml"
+//go:embed template/kubernetes/service.yaml.gohtml
+var defaultServiceTemplate []byte
 
 type stepService struct {
 	*plugin
@@ -43,12 +44,10 @@ func (d *stepService) Run(_ context.Context) (err error) {
 	filename := gox.StringBuilder(service).Append(dot).Append(label).Append(dot).Append(yaml).String()
 
 	// 写入配置文件
-	if defaultServiceTemplate != d.Service.Template {
+	if "" != d.Kubernetes.Service {
 		err = gfx.Copy(d.Service.Template, filename)
-	} else if bytes, re := os.ReadFile(d.Service.Template); nil != re {
-		err = re
 	} else {
-		err = tpl.New(string(bytes)).Data(d.plugin).Build().ToFile(filename)
+		err = tpl.New(string(defaultServiceTemplate)).Data(d.plugin).Build().ToFile(filename)
 	}
 	if nil != err {
 		return

@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	_ "embed"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -12,10 +14,13 @@ import (
 	"github.com/goexl/gox/tpl"
 )
 
-const defaultDeploymentTemplate = "docker/etc/kubernetes/template/deployment.yaml.gohtml"
+//go:embed template/kubernetes/deployment.yaml.gohtml
+var defaultDeploymentTemplate []byte
 
 type stepStateless struct {
 	*plugin
+
+	printed bool
 }
 
 func newStatelessStep(plugin *plugin) *stepStateless {
@@ -51,11 +56,6 @@ func (s *stepStateless) Run(ctx context.Context) (err error) {
 		s.Stateless.Ports = append(s.Stateless.Ports, port)
 	}
 
-	// 统一环境变量
-	for key, value := range s.Stateless.Envs {
-		s.Stateless.Environments[key] = value
-	}
-
 	if nil != s.Kubernetes {
 		err = s.kubernetes(ctx)
 	}
@@ -76,12 +76,10 @@ func (s *stepStateless) kubernetes(_ context.Context) (err error) {
 	label := rand.New().String().Build().Generate()
 	filename := gox.StringBuilder(stateless).Append(dot).Append(label).Append(dot).Append(yaml).String()
 	// 写入配置文件
-	if defaultDeploymentTemplate != s.Stateless.Template {
-		err = gfx.Copy(s.Stateless.Template, filename)
-	} else if bytes, re := os.ReadFile(s.Stateless.Template); nil != re {
-		err = re
+	if "" != s.Kubernetes.Deployment {
+		err = gfx.Copy(s.Kubernetes.Deployment, filename)
 	} else {
-		err = tpl.New(string(bytes)).Data(s.plugin).Build().ToFile(filename)
+		err = tpl.New(string(defaultDeploymentTemplate)).Data(s.plugin).Build().ToFile(filename)
 	}
 	if nil != err {
 		return
@@ -89,7 +87,11 @@ func (s *stepStateless) kubernetes(_ context.Context) (err error) {
 
 	// 清理文件
 	s.Cleanup().File(filename).Build()
-	err = s.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build())
+	if err = s.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build()); nil != err && !s.printed {
+		bytes, _ := os.ReadFile(filename)
+		fmt.Println(string(bytes))
+		s.printed = true
+	}
 
 	return
 }
@@ -99,7 +101,7 @@ func (s *stepStateless) filepath(paths ...string) string {
 }
 
 func (s *stepStateless) env(key string, value string) {
-	s.Stateless.Envs[key] = value
+	s.Stateless.Environments[key] = gox.StringBuilder(quota, value, quota).String()
 }
 
 func (s *stepStateless) action(key string, value string) {

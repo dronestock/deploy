@@ -7,6 +7,7 @@ const (
 	service            = "service"
 	yaml               = "yaml"
 	dot                = "."
+	quota              = `"`
 	equal              = "="
 	file               = "filename"
 	enter              = "\n"

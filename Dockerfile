@@ -1,4 +1,4 @@
-FROM alpine/k8s:1.26.2 AS kubectl
+FROM dockerproxy.com/alpine/k8s:1.26.2 AS kubectl
 
 
 
@@ -17,7 +17,7 @@ LABEL author="storezhang<华寅>" \
 # 复制Kubernetes控制程序
 COPY --from=kubectl /usr/bin/kubectl /usr/bin/kubectl
 # 复制主程序
-COPY docker /
+COPY deploy /bin
 
 
 RUN set -ex \
@@ -39,6 +39,10 @@ RUN set -ex \
 
 # 执行命令
 ENTRYPOINT /bin/deploy
+
+
+# 强制使用Kubernetes默认用户
+ENV USERNAME default
 
 
 # 强制用户名为Kubernetes默认用户名

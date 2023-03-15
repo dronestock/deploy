@@ -1,7 +1,6 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  {{ if .Kubernetes.Share.Namespace }}shareProcessNamespace: true{{ end -}}
   name: {{ .Name }}
   namespace: {{ .Kubernetes.Namespace }}
   labels:
@@ -33,6 +32,7 @@ spec:
       {{- end }}
     {{- end }}
     spec:
+      {{ if .Kubernetes.Share.Namespace }}shareProcessNamespace: true{{ end }}
       containers:
         - name: {{ .Name }}
           image: {{ .Registry }}/{{ .Repository }}:{{ .Tag }}
