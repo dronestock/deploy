@@ -3,7 +3,7 @@ module github.com/dronestock/deploy
 go 1.19
 
 require (
-	github.com/dronestock/drone v0.9.2
+	github.com/dronestock/drone v0.9.3
 	github.com/goexl/gfx v0.1.7
 	github.com/goexl/gox v0.2.8
 )
@@ -36,5 +36,3 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
 )
-
-replace github.com/dronestock/drone => ../drone
