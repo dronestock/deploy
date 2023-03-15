@@ -39,3 +39,7 @@ RUN set -ex \
 
 # 执行命令
 ENTRYPOINT /bin/deploy
+
+
+# 强制用户名为Kubernetes默认用户名
+ENV USERNAME default
