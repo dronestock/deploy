@@ -39,7 +39,7 @@ type plugin struct {
 	// 配置目录
 	Dir string `default:"${DIR=.deploy}" json:"dir"`
 	// 无状态服务
-	Stateless *_stateless `default:"${DEPLOYMENT}" json:"stateless"`
+	Stateless *_stateless `default:"${STATELESS}" json:"stateless"`
 	// 服务配置
 	Service *_service `default:"${SERVICE}" json:"service"`
 }
