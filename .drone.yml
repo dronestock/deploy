@@ -1,9 +1,24 @@
 kind: secret
-name: username111
+name: token_docker
 get:
   path: secrets
-  name: docker_username
+  name: token_docker_dronestock
 ---
+
+kind: secret
+name: password_ccr
+get:
+  path: secrets
+  name: password_ccr
+---
+
+kind: secret
+name: token_github
+get:
+  path: secrets
+  name: token_github_storezhang
+---
+
 
 kind: pipeline
 type: docker
@@ -25,11 +40,6 @@ environment:
 steps:
   - name: 取码
     image: ccr.ccs.tencentyun.com/dronestock/git
-    environment:
-      USERNAME111:
-        from_secret: username111
-    commands:
-      - echo $USERNAME111
 
   - name: 编译
     image: ccr.ccs.tencentyun.com/pangum/drone
@@ -61,7 +71,7 @@ steps:
       PASSWORD_DOCKER:
         from_secret: token_docker
       PASSWORD_CCR:
-        from_secret: password_tencentyun_ccr
+        from_secret: password_ccr
     settings:
       repository: dronestock/deploy
       registries:
