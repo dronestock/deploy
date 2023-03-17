@@ -66,6 +66,9 @@ func (s *stepStateless) kubernetes(_ context.Context) (err error) {
 
 	label := rand.New().String().Build().Generate()
 	filename := gox.StringBuilder(stateless).Append(dot).Append(label).Append(dot).Append(yaml).String()
+	// 保证在插件退时清理文件
+	s.Cleanup().File(filename).Build()
+
 	// 写入配置文件
 	if "" != s.Kubernetes.Deployment {
 		err = gfx.Copy(s.Kubernetes.Deployment, filename)
@@ -76,8 +79,6 @@ func (s *stepStateless) kubernetes(_ context.Context) (err error) {
 		return
 	}
 
-	// 清理文件
-	s.Cleanup().File(filename).Build()
 	if err = s.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build()); nil != err && !s.printed {
 		bytes, _ := os.ReadFile(filename)
 		fmt.Println(string(bytes))

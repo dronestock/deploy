@@ -61,10 +61,10 @@ spec:
                 {{ if .Resource.Limit.Cpu }}cpu: {{ .Resource.Limit.Cpu }}{{ end }}
                 {{ if .Resource.Limit.Memory }}memory: {{ .Resource.Limit.Memory.Byte }}{{ end }}
           {{- end}}
-          {{- if .Resource.Limit }}
+          {{- if .Resource.Request }}
               requests:
-                {{ if .Resource.Limit.Cpu }}cpu: {{ .Resource.Request.Cpu }}{{ end }}
-                {{ if .Resource.Limit.Memory }}memory: {{ .Resource.Request.Memory.Byte }}{{ end }}
+                {{ if .Resource.Request.Cpu }}cpu: {{ .Resource.Request.Cpu }}{{ end }}
+                {{ if .Resource.Request.Memory }}memory: {{ .Resource.Request.Memory.Byte }}{{ end }}
           {{- end}}
         {{- end }}
           terminationMessagePath: /dev/termination-log
