@@ -54,7 +54,19 @@ spec:
               value: {{ $value }}
           {{- end }}
         {{- end }}
-          resources: {}
+        {{- if .Resource }}
+          resources:
+          {{- if .Resource.Limit }}
+              limits:
+                {{ if .Resource.Limit.Cpu }}cpu: {{ .Resource.Limit.Cpu }}{{ end }}
+                {{ if .Resource.Limit.Memory }}memory: {{ .Resource.Limit.Memory.Byte }}{{ end }}
+          {{- end}}
+          {{- if .Resource.Limit }}
+              requests:
+                {{ if .Resource.Limit.Cpu }}cpu: {{ .Resource.Request.Cpu }}{{ end }}
+                {{ if .Resource.Limit.Memory }}memory: {{ .Resource.Request.Memory.Byte }}{{ end }}
+          {{- end}}
+        {{- end }}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always

@@ -41,6 +41,8 @@ type plugin struct {
 	// 端口列表
 	Ports []*port `default:"${PORTS}" json:"ports,omitempty"`
 
+	// 资源限制
+	Resource *resource `default:"${resource}" json:"resource,omitempty"`
 	// 配置目录
 	Dir string `default:"${DIR=.deploy}" json:"dir,omitempty"`
 	// 无状态服务
