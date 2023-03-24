@@ -9,7 +9,7 @@ metadata:
     repository: {{ .KubernetesRepository }}
 {{- if .Stateless.Annotations }}
   annotations:
-  {{- range $key, $value := . }}
+  {{- range $key, $value := .Stateless.Annotations }}
      {{ $key }}: {{ $value }}
   {{- end }}
 {{- end }}
@@ -30,7 +30,7 @@ spec:
         repository: {{ .KubernetesRepository }}
     {{- if .Stateless.Annotations }}
       annotations:
-      {{- range $key, $value := . }}
+      {{- range $key, $value := .Stateless.Annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
     {{- end }}
