@@ -7,9 +7,9 @@ metadata:
     app: {{ .Name }}
     registry: {{ .Registry }}
     repository: {{ .KubernetesRepository }}
-{{- if .Stateless.Annotations }}
+{{- if .Annotations }}
   annotations:
-  {{- range $key, $value := .Stateless.Annotations }}
+  {{- range $key, $value := .Annotations }}
      {{ $key }}: {{ $value }}
   {{- end }}
 {{- end }}

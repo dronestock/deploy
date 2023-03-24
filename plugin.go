@@ -68,17 +68,6 @@ func (p *plugin) Setup() (err error) {
 		p.Ports = append(p.Ports, p.Port)
 	}
 
-	// 统一注解
-	if 0 != len(p.Annotations) && nil != p.Stateless {
-		p.Stateless.Annotations = gox.If(nil == p.Stateless.Annotations, make(map[string]string))
-		p.copy(p.Annotations, p.Stateless.Annotations)
-	}
-	// 统一环境变量
-	if 0 != len(p.Environments) && nil != p.Stateless {
-		p.Stateless.Environments = gox.If(nil == p.Stateless.Environments, make(map[string]string))
-		p.copy(p.Environments, p.Stateless.Environments)
-	}
-
 	return
 }
 

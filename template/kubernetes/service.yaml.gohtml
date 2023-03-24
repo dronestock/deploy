@@ -7,6 +7,12 @@ metadata:
     app: {{ .Name }}
     registry: {{ .Registry }}
     repository: {{ .KubernetesRepository }}
+{{- if .Annotations }}
+  annotations:
+  {{- range $key, $value := .Annotations }}
+      {{ $key }}: {{ $value }}
+  {{- end }}
+{{- end }}
 
 spec:
 {{- if .Ports }}
