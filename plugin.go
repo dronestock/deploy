@@ -47,6 +47,11 @@ type plugin struct {
 	Dir string `default:"${DIR=.deploy}" json:"dir,omitempty"`
 	// 无状态服务
 	Stateless *_stateless `default:"${STATELESS}" json:"stateless,omitempty"`
+
+	// 注解
+	Annotations map[string]string `default:"${ANNOTATIONS}" json:"annotations,omitempty"`
+	// 环境变量
+	Environments map[string]string `default:"${ENVIRONMENTS}" json:"environments,omitempty"`
 }
 
 func newPlugin() drone.Plugin {
@@ -61,6 +66,17 @@ func (p *plugin) Setup() (err error) {
 	}
 	if nil != p.Port {
 		p.Ports = append(p.Ports, p.Port)
+	}
+
+	// 统一注解
+	if 0 != len(p.Annotations) && nil != p.Stateless {
+		p.Stateless.Annotations = gox.If(nil == p.Stateless.Annotations, make(map[string]string))
+		p.copy(p.Annotations, p.Stateless.Annotations)
+	}
+	// 统一环境变量
+	if 0 != len(p.Environments) && nil != p.Stateless {
+		p.Stateless.Environments = gox.If(nil == p.Stateless.Environments, make(map[string]string))
+		p.copy(p.Environments, p.Stateless.Environments)
 	}
 
 	return
@@ -138,4 +154,10 @@ func (p *plugin) readline(path string, fun lineFun) (err error) {
 
 func (p *plugin) close(file *os.File) {
 	_ = file.Close()
+}
+
+func (p *plugin) copy(from map[string]string, to map[string]string) {
+	for key, value := range from {
+		to[key] = value
+	}
 }
