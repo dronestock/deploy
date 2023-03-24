@@ -11,7 +11,7 @@ type _stateless struct {
 	// 复本数
 	Replicas int `json:"replicas,omitempty" validate:"required"`
 	// 注解
-	Annotations map[string]string `json:"annotation,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
 	// 环境变量
-	Environments map[string]string `json:"environment,omitempty"`
+	Environments map[string]string `json:"environments,omitempty"`
 }
