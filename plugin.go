@@ -96,9 +96,25 @@ func (p *plugin) Steps() drone.Steps {
 }
 
 func (p *plugin) Fields() (fields gox.Fields[any]) {
-	fields = make(gox.Fields[any], 0, 2)
+	fields = gox.Fields[any]{
+		field.New("name", p.Name),
+		field.New("registry", p.Registry),
+		field.New("repository", p.Repository),
+		field.New("tag", p.Tag),
+		field.New("ports", p.Ports),
+		field.New("dir", p.Dir),
+	}
 	if nil != p.Stateless {
-		fields = append(fields, field.New("stateless", p.Stateless))
+		fields.Add(field.New("stateless", p.Stateless))
+	}
+	if nil != p.Resource {
+		fields.Add(field.New("resource", p.Resource))
+	}
+	if 0 != len(p.Annotations) {
+		fields.Add(field.New("annotations", p.Annotations))
+	}
+	if 0 != len(p.Environments) {
+		fields.Add(field.New("environments", p.Annotations))
 	}
 
 	return
