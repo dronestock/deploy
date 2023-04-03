@@ -97,6 +97,7 @@ func (p *plugin) Steps() drone.Steps {
 
 func (p *plugin) Fields() (fields gox.Fields[any]) {
 	fields = gox.Fields[any]{
+		field.New("username", p.Username),
 		field.New("name", p.Name),
 		field.New("registry", p.Registry),
 		field.New("repository", p.Repository),
