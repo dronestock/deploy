@@ -105,6 +105,9 @@ func (p *plugin) Fields() (fields gox.Fields[any]) {
 		field.New("ports", p.Ports),
 		field.New("dir", p.Dir),
 	}
+	if nil != p.Kubernetes {
+		fields.Add(field.New("kubernetes", p.Kubernetes))
+	}
 	if nil != p.Stateless {
 		fields.Add(field.New("stateless", p.Stateless))
 	}
