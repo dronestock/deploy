@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 
+	"github.com/goexl/exc"
 	"github.com/goexl/gox"
 	"github.com/goexl/gox/args"
+	"github.com/goexl/gox/field"
 )
 
 const (
@@ -39,7 +41,11 @@ func (n *stepNamespace) Run(_ context.Context) (err error) {
 
 	// 如果命名空间不存在，创建命名空间
 	if !gox.Contains(&namespaces, n.Kubernetes.Namespace) {
-		err = n.kubectl(args.New().Build().Subcommand(create, namespace, n.Kubernetes.Namespace).Build())
+		err = exc.NewFields(
+			"命名空间不存在，请系统管理员创建",
+			field.New("namespaces", namespaces),
+			field.New("namespace", n.Kubernetes.Namespace),
+		)
 	}
 
 	return
