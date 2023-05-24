@@ -39,7 +39,7 @@ func (n *stepNamespace) Run(_ context.Context) (err error) {
 		return
 	}
 
-	// 如果命名空间不存在，创建命名空间
+	// 如果命名空间不存在，给出具体的错误
 	if !gox.Contains(&namespaces, n.Kubernetes.Namespace) {
 		err = exc.NewFields(
 			"命名空间不存在，请系统管理员创建",

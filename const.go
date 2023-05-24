@@ -17,6 +17,6 @@ const (
 	def    = "default"
 	token  = "token"
 	get    = "get"
-	create = "create"
+	force  = "force"
 	apply  = "apply"
 )
