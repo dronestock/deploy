@@ -83,7 +83,7 @@ func (s *stepStateless) kubernetes(_ context.Context) (err error) {
 	ka := args.New().Build()
 	ka.Subcommand(apply)
 	ka.Arg(file, filename)
-	ka.Add(force, strconv.FormatBool(true))
+	ka.Arg(force, strconv.FormatBool(true))
 	if err = s.kubectl(ka.Build()); nil != err && !s.printed {
 		bytes, _ := os.ReadFile(filename)
 		fmt.Println(string(bytes))
