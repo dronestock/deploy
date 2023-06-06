@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/goexl/gfx"
 	"github.com/goexl/gox"
@@ -66,7 +67,11 @@ func (s *stepService) kubernetes(_ context.Context) (err error) {
 		return
 	}
 
-	if err = s.kubectl(args.New().Build().Subcommand(apply).Arg(file, filename).Build()); nil != err && !s.printed {
+	ka := args.New().Build()
+	ka.Subcommand(apply)
+	ka.Arg(file, filename)
+	ka.Arg(force, strconv.FormatBool(true))
+	if err = s.kubectl(ka.Build()); nil != err && !s.printed {
 		bytes, _ := os.ReadFile(filename)
 		fmt.Println(string(bytes))
 		s.printed = true
