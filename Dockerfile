@@ -1,7 +1,7 @@
 FROM dockerproxy.com/alpine/k8s:1.27.2 AS kubectl
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.18.0 AS builder
+FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.18.2 AS builder
 
 # 复制Kubernetes控制程序
 COPY --from=kubectl /usr/bin/kubectl /usr/local/bin/kubectl
@@ -9,7 +9,7 @@ COPY --from=kubectl /usr/bin/kubectl /usr/local/bin/kubectl
 COPY deploy /usr/local/bin
 
 
-FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.18.0
+FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.18.2
 
 LABEL author="storezhang<华寅>" \
     email="storezhang@gmail.com" \
