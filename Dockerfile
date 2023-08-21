@@ -1,4 +1,4 @@
-FROM dockerproxy.com/alpine/k8s:1.27.4 AS kubectl
+FROM dockerproxy.com/alpine/k8s:1.28.0 AS kubectl
 
 
 FROM ccr.ccs.tencentyun.com/storezhang/alpine:3.18.3 AS builder
